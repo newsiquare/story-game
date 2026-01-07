@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import { Scene } from '@/types/game';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2 } from 'lucide-react';
@@ -42,9 +44,14 @@ export function SceneDisplay({ scene, onNext, onPrev, showNext, showPrev }: Scen
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-6 bg-white rounded-3xl shadow-xl min-h-[600px]">
             <div className="relative w-full aspect-video bg-gray-100 rounded-2xl overflow-hidden mb-6 border-4 border-orange-200">
                 {scene.imageUrl ? (
-                    <div className="w-full h-full bg-orange-50 flex items-center justify-center">
-                        {/* Image Placeholder */}
-                        <span className="text-6xl">🖼️</span>
+                    <div className="relative w-full h-full">
+                        <Image
+                            src={scene.imageUrl}
+                            alt={scene.storyText}
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400">

@@ -18,11 +18,20 @@ export function BookCard({ book }: BookCardProps) {
                 <div className="relative w-full aspect-[3/4] bg-gray-200">
                     {/* Placeholder for image if not exists, or real image */}
                     {book.coverImage ? (
+                        <div className="relative w-full h-full">
+                            <Image
+                                src={book.coverImage}
+                                alt={book.title}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover"
+                            />
+                        </div>
+                    ) : (
                         <div className="w-full h-full bg-blue-100 flex items-center justify-center text-gray-400">
-                            {/* We will use real Image tag later when we have assets, using div for now to avoid 404s on non-existent images */}
                             <span className="text-4xl">📖</span>
                         </div>
-                    ) : null}
+                    )}
                 </div>
                 <div className="p-4 w-full bg-yellow-50 text-center">
                     <h3 className="text-xl font-bold text-gray-800 group-hover:text-yellow-600">

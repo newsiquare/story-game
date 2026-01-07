@@ -153,7 +153,7 @@ export function QuestionPanel({ question, onAnswer }: QuestionPanelProps) {
                                 whileHover={!isSubmitted ? { scale: 1.02 } : {}}
                                 whileTap={!isSubmitted ? { scale: 0.98 } : {}}
                                 onClick={() => handleOptionClick(option.id)}
-                                className={`flex items-center justify-between p-6 rounded-2xl border-2 text-xl font-medium text-left transition-colors ${bgColor} ${borderColor} shadow-sm`}
+                                className={`flex items-center justify-between p-6 rounded-2xl border-2 text-xl font-medium text-left transition-colors ${bgColor} ${borderColor} shadow-sm text-black`}
                                 disabled={isSubmitted || isProcessing}
                             >
                                 <span>{option.text}</span>
@@ -169,8 +169,8 @@ export function QuestionPanel({ question, onAnswer }: QuestionPanelProps) {
                     onClick={handleVoiceAnswer}
                     disabled={isSubmitted || isProcessing}
                     className={`flex items-center space-x-2 px-6 py-4 rounded-full font-bold shadow-md transition-all ${isRecording
-                            ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-                            : 'bg-purple-500 hover:bg-purple-600 text-white hover:scale-105'
+                        ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                        : 'bg-purple-500 hover:bg-purple-600 text-white hover:scale-105'
                         }`}
                 >
                     {isProcessing ? (
