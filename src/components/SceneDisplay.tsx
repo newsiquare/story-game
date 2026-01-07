@@ -1,6 +1,7 @@
 import { Scene } from '@/types/game';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2 } from 'lucide-react';
+import { useState } from 'react';
 
 interface SceneDisplayProps {
     scene: Scene;
@@ -11,6 +12,32 @@ interface SceneDisplayProps {
 }
 
 export function SceneDisplay({ scene, onNext, onPrev, showNext, showPrev }: SceneDisplayProps) {
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const playAudio = async () => {
+        if (isPlaying) return;
+        setIsPlaying(true);
+        try {
+            const response = await fetch('/api/tts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: scene.storyText }),
+            });
+
+            if (!response.ok) throw new Error('TTS failed');
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+
+            audio.onended = () => setIsPlaying(false);
+            audio.play();
+        } catch (err) {
+            console.error(err);
+            setIsPlaying(false);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-6 bg-white rounded-3xl shadow-xl min-h-[600px]">
             <div className="relative w-full aspect-video bg-gray-100 rounded-2xl overflow-hidden mb-6 border-4 border-orange-200">
@@ -31,9 +58,16 @@ export function SceneDisplay({ scene, onNext, onPrev, showNext, showPrev }: Scen
                     {scene.storyText}
                 </p>
 
-                <button className="flex items-center space-x-2 px-4 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-full transition-colors">
-                    <Volume2 size={24} />
-                    <span>播放語音</span>
+                <button
+                    onClick={playAudio}
+                    disabled={isPlaying}
+                    className={`flex items-center space-x-2 px-6 py-2 rounded-full transition-all ${isPlaying
+                        ? 'bg-yellow-300 text-yellow-800 scale-105 shadow-inner'
+                        : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700 shadow-sm'
+                        }`}
+                >
+                    <Volume2 size={24} className={isPlaying ? 'animate-pulse' : ''} />
+                    <span>{isPlaying ? '播放中...' : '播放語音'}</span>
                 </button>
             </div>
 
@@ -42,8 +76,8 @@ export function SceneDisplay({ scene, onNext, onPrev, showNext, showPrev }: Scen
                     onClick={onPrev}
                     disabled={!showPrev}
                     className={`px-6 py-3 rounded-full font-bold text-lg transition-all ${showPrev
-                            ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 transform hover:scale-105'
-                            : 'opacity-0 pointer-events-none'
+                        ? 'bg-gray-200 text-gray-700 hover:bg-gray-300 transform hover:scale-105'
+                        : 'opacity-0 pointer-events-none'
                         }`}
                 >
                     ⬅️ 上一頁
@@ -53,8 +87,8 @@ export function SceneDisplay({ scene, onNext, onPrev, showNext, showPrev }: Scen
                     onClick={onNext}
                     disabled={!showNext}
                     className={`px-8 py-3 rounded-full font-bold text-lg transition-all ${showNext
-                            ? 'bg-green-500 text-white hover:bg-green-600 shadow-lg transform hover:scale-105'
-                            : 'opacity-0 pointer-events-none'
+                        ? 'bg-green-500 text-white hover:bg-green-600 shadow-lg transform hover:scale-105'
+                        : 'opacity-0 pointer-events-none'
                         }`}
                 >
                     {scene.question ? '去回答問題 ➡️' : '下一頁 ➡️'}
